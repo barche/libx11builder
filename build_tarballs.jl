@@ -31,84 +31,67 @@ sources = [
     "https://xorg.freedesktop.org/releases/individual/lib/libXext-1.3.4.tar.bz2" =>
     "59ad6fcce98deaecc14d39a672cf218ca37aba617c9a0f691cac3bcd28edf82b",
 
+    "https://xorg.freedesktop.org//releases/individual/lib/xtrans-1.4.0.tar.bz2" =>
+    "377c4491593c417946efcd2c7600d1e62639f7a8bbca391887e2c4679807d773",
+
+    "https://xkbcommon.org/download/libxkbcommon-0.9.1.tar.xz" =>
+    "d4c6aabf0a5c1fc616f8a6a65c8a818c03773b9a87da9fbc434da5acd1199be0"
 ]
 
 # Bash recipe for building across all platforms
 script = raw"""
 cd $WORKSPACE/srcdir
-echo $prefix
 cd util-macros-1.19.2/
 ./configure --prefix=$prefix --host=$target
 make install
+
 cd ../xorgproto-2019.2/
 ./configure --prefix=$prefix --host=$target
 make install
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$prefix/share/pkgconfig
+
 cd ../xcb-proto-1.13/
 ./configure --prefix=$prefix --host=$target
 make install
 cd ../libXdmcp-1.1.3/
 ./configure --prefix=$prefix --host=$target --disable-static
-echo $PKG_CONFIG_PATH/
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$prefix/share/pkgconfig
-./configure --prefix=$prefix --host=$target --disable-static
-make -j16
+make
 make install
+
 cd ../libXau-1.0.9/
 ./configure --prefix=$prefix --host=$target
 make
 make install
+
 cd ../libxcb-1.13.1/
-./configure --prefix=$prefix --host=$target --disable-static
-./configure --help | grep i thread
-./configure --help | grep -i thread
-./configure --help
-./configure --prefix=$prefix --host=$target --disable-static
-wget https://git.archlinux.org/svntogit/packages.git/tree/trunk/libxcb-1.1-no-pthread-stubs.patch?h=packages/libxcb
-less libxcb-1.1-no-pthread-stubs.patch\?h\=packages%2Flibxcb 
-rm libxcb-1.1-no-pthread-stubs.patch\?h\=packages%2Flibxcb 
-wget https://git.archlinux.org/svntogit/packages.git/plain/trunk/libxcb-1.1-no-pthread-stubs.patch?h=packages/libxcb
-less libxcb-1.1-no-pthread-stubs.patch\?h\=packages%2Flibxcb 
-rm libxcb-1.1-no-pthread-stubs.patch\?h\=packages%2Flibxcb 
-curl https://git.archlinux.org/svntogit/packages.git/plain/trunk/libxcb-1.1-no-pthread-stubs.patch?h=packages/libxcb --output ../libxcb-1.1-no-pthread-stubs.patch
-patch -Np1 -i ../libxcb-1.1-no-pthread-stubs.patch
-autoreconf -vfi
-cd ../util-macros-1.19.2/
-./configure
-make install
-cd ../libxcb-1.13.1/
-autoreconf -vfi
-vim configure.ac
-ls $prefix/share/aclocal/
+curl https://git.archlinux.org/svntogit/packages.git/plain/trunk/libxcb-1.1-no-pthread-stubs.patch?h=packages/libxcb --output libxcb-1.1-no-pthread-stubs.patch
+patch -Np1 -i libxcb-1.1-no-pthread-stubs.patch
 autoreconf -I$prefix/share/aclocal -vfi
 ./configure --prefix=$prefix --host=$target --disable-static
 make -j16
 make install
-cd ../libX11-1.6.9/
-./configure --prefix=$prefix --host=$target --disable-static
-cd ..
-ls
-cd ..
-ls
-ls metadir/
-ls destdir/
-cd srcdir/
-ls
-wget https://xorg.freedesktop.org//releases/individual/lib/xtrans-1.4.0.tar.bz2
-tar xvf xtrans-1.4.0.tar.bz2 
-rm xtrans-1.4.0.tar.bz2 
-cd xtrans-1.4.0/
+
+cd ../xtrans-1.4.0/
 ls
 ./configure --prefix=$prefix --host=$target
 make
 make install
+
 cd ../libX11-1.6.9/
 ./configure --prefix=$prefix --host=$target --disable-static
 make -j16
 make install
+
 cd ../libXext-1.3.4/
 ./configure --prefix=$prefix --host=$target --disable-static
 make -j16
 make install
+
+cd ../libxkbcommon-0.9.1
+apk add meson
+meson setup build -Dprefix=/workspace/destdir -Denable-wayland=false -Denable-docs=false
+ninja -C build
+ninja -C build install
 
 """
 
@@ -148,7 +131,9 @@ products(prefix) = [
     LibraryProduct(prefix, "libxcb-randr", Symbol("libxcb-randr")),
     LibraryProduct(prefix, "libxcb-xv", Symbol("libxcb-xv")),
     LibraryProduct(prefix, "libxcb-render", Symbol("libxcb-render")),
-    LibraryProduct(prefix, "libX11-xcb", Symbol("libx11-xcb"))
+    LibraryProduct(prefix, "libX11-xcb", Symbol("libx11-xcb")),
+    LibraryProduct(prefix, "libxkbcommon", Symbol("libxkbcommon")),
+    LibraryProduct(prefix, "libxkbcommon-x11", Symbol("libxkbcommon-x11"))
 ]
 
 # Dependencies that must be installed before this package can be built
