@@ -24,6 +24,21 @@ sources = [
 
     "https://xcb.freedesktop.org/dist/libxcb-1.13.1.tar.bz2" =>
     "a89fb7af7a11f43d2ce84a844a4b38df688c092bf4b67683aef179cdf2a647c4",
+    
+    "https://xcb.freedesktop.org/dist/xcb-util-0.4.0.tar.bz2" =>
+    "46e49469cb3b594af1d33176cd7565def2be3fa8be4371d62271fabb5eae50e9",
+
+    "https://xcb.freedesktop.org/dist/xcb-util-wm-0.4.1.tar.bz2" =>
+    "28bf8179640eaa89276d2b0f1ce4285103d136be6c98262b6151aaee1d3c2a3f",
+
+    "https://xcb.freedesktop.org/dist/xcb-util-image-0.4.0.tar.bz2" =>
+    "2db96a37d78831d643538dd1b595d7d712e04bdccf8896a5e18ce0f398ea2ffc",
+
+    "https://xcb.freedesktop.org/dist/xcb-util-keysyms-0.4.0.tar.bz2" =>
+    "0ef8490ff1dede52b7de533158547f8b454b241aa3e4dcca369507f66f216dd9",
+
+    "https://xcb.freedesktop.org/dist/xcb-util-renderutil-0.3.9.tar.bz2" =>
+    "c6e97e48fb1286d6394dddb1c1732f00227c70bd1bedb7d1acabefdd340bea5b",
 
     "https://xorg.freedesktop.org/releases/individual/lib/libX11-1.6.9.tar.bz2" =>
     "9cc7e8d000d6193fa5af580d50d689380b8287052270f5bb26a5fb6b58b2bed1",
@@ -69,6 +84,31 @@ patch -Np1 -i libxcb-1.1-no-pthread-stubs.patch
 autoreconf -I$prefix/share/aclocal -vfi
 ./configure --prefix=$prefix --host=$target --disable-static
 make -j16
+make install
+
+cd ../xcb-util-0.4.0
+./configure --prefix=$prefix --host=$target --disable-static
+make
+make install
+
+cd ../xcb-util-wm-0.4.1
+./configure --prefix=$prefix --host=$target --disable-static
+make
+make install
+
+cd ../xcb-util-image-0.4.0
+./configure --prefix=$prefix --host=$target --disable-static
+make
+make install
+
+cd ../xcb-util-keysyms-0.4.0
+./configure --prefix=$prefix --host=$target --disable-static
+make
+make install
+
+cd ../xcb-util-renderutil-0.3.9
+./configure --prefix=$prefix --host=$target --disable-static
+make
 make install
 
 cd ../xtrans-1.4.0/
@@ -124,6 +164,7 @@ products(prefix) = [
     LibraryProduct(prefix, "libxcb-xfixes", Symbol("libxcb-xfixes")),
     LibraryProduct(prefix, "libxcb-composite", Symbol("libxcb-composite")),
     LibraryProduct(prefix, "libxcb-xinput", Symbol("libxcb-xinput")),
+    LibraryProduct(prefix, "libxcb-icccm", Symbol("libxcb-icccm")),
     LibraryProduct(prefix, "libXdmcp", :libxdcmp),
     LibraryProduct(prefix, "libxcb-xvmc", Symbol("libxcb-xvmc")),
     LibraryProduct(prefix, "libXext", :libxext),
