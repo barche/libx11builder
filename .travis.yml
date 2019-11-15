@@ -24,3 +24,13 @@ before_script:
 script:
   - julia build_tarballs.jl
 
+deploy:
+  provider: releases
+  api_key:
+    secure: xCut0MxLHQ18ZbUytcqx6omUyMxJzDKE4ife6620mmF/xz5dsbc2wJOloUKFG1ACvT69ktb0oFhJltMwECGXU5lbUoRXcWnScaIOjDHsx9Iw4BaYxjF+S97UGWSdg40xLFXiw4w1w/oRLAfHwv9mOSfEpn1oCvJ4tufsXTcY3stTEYYSePlZOCz/0jDMl8qTW+Y2SVraGxErkRr46UMcTYqlhz7p7/n4vcb/fNdWLqB8B5OYKSmZeSZ2Yqf7jNl9L4L416trllIv2NlFo1iMzfZF5MavwnrSL1xRPmkqZrpKFR0oRGFeSFoaVROxbEjObAUYv6kR4WR/VsdA5UrKpZ2K5aSsoggaKItv0JFQXDWjTyHJ2q5MKSC0WfwRErD/AqYBKNQYHCxxjKeRp+MGsIJfHjipy1oThGjWyCkqQZbtDlrKhCCcZCDWt6A/jaAlkkiFllEtn31dBHbBWphcY2JfP50rLIAA6O4F3pp2olQTFPHZ1s9bZdJcvCqWvlp0905lzF1wWMEq+FlFLCdEiiIJcin/LGiNUooSR4GmVqCa0WIbDrjBlpISTccDr5/r83JgbNRLDFcVx4WnfivXmgU1hGZXfG+TN1z413+EA35y89jZdCtx6Dl4NlHvl4orz8i5H0NrHrYOUzqtJQw28ImgKhZ/EbOENN1p4PBYEu8=
+  file_glob: true
+  file: products/*
+  skip_cleanup: true
+  on:
+    repo: barche/libx11builder
+    tags: true

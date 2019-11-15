@@ -83,7 +83,7 @@ curl https://git.archlinux.org/svntogit/packages.git/plain/trunk/libxcb-1.1-no-p
 patch -Np1 -i libxcb-1.1-no-pthread-stubs.patch
 autoreconf -I$prefix/share/aclocal -vfi
 ./configure --prefix=$prefix --host=$target --disable-static
-make -j16
+make
 make install
 
 cd ../xcb-util-0.4.0
@@ -119,12 +119,12 @@ make install
 
 cd ../libX11-1.6.9/
 ./configure --prefix=$prefix --host=$target --disable-static
-make -j16
+make
 make install
 
 cd ../libXext-1.3.4/
 ./configure --prefix=$prefix --host=$target --disable-static
-make -j16
+make
 make install
 
 cd ../libxkbcommon-0.9.1
